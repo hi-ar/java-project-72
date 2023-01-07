@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.controllers.RootController;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
@@ -23,7 +24,7 @@ public class App {
     }
 
     private static int getPort() {
-        String port = System.getenv().getOrDefault("PORT", "8080");
+        String port = System.getenv().getOrDefault("PORT", "5001");
         return Integer.valueOf(port);
     }
 

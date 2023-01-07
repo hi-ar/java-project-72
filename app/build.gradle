@@ -19,12 +19,12 @@ compileJava {
 }
 
 application {
-  mainClass = 'io.hexlet.App'
+  mainClass = 'hexlet.code.App'
 }
 
 dependencies {
-  implementation 'io.javalin:javalin:4.3.0'
-  implementation 'org.slf4j:slf4j-simple:1.7.36'
+  implementation 'io.javalin:javalin:4.3.0' //javalin
+  implementation 'org.slf4j:slf4j-simple:1.7.36' //logger
 
   implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
   implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'

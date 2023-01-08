@@ -3,6 +3,8 @@ package hexlet.code;
 import hexlet.code.controllers.RootController;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
 

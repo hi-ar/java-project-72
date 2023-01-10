@@ -1,5 +1,5 @@
 datasource:
-  default: ${APP_ENV}
+  default: ${APP_ENV}   #production/development
 
   development: # using for development H2
     username: sa
@@ -12,10 +12,10 @@ datasource:
     url: ${JDBC_DATABASE_URL}
 
 ebean:
-  migration:
-    run: true
-
-#  ddl:
+#  migration:
 #    run: true
-#    generate: true
-#    seedSql: seed.sql
+
+  ddl:
+    run: true
+    generate: true
+    seedSql: seed.sql

@@ -2,17 +2,11 @@ package hexlet.code;
 
 import hexlet.code.controllers.RootController;
 import io.javalin.Javalin;
-import io.javalin.core.JavalinConfig;
-import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-
-import javax.servlet.ServletContext;
 
 /*
 

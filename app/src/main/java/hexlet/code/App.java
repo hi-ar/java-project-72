@@ -3,8 +3,16 @@ package hexlet.code;
 import hexlet.code.controllers.RootController;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
+import io.javalin.plugin.rendering.JavalinRenderer;
+import io.javalin.plugin.rendering.template.JavalinThymeleaf;
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import javax.servlet.ServletContext;
 
 /*
 
@@ -14,11 +22,45 @@ public class App {
         Javalin app = getApp();
         app.start(getPort());
     }
+    private static String getMode() {
+        return System.getenv().getOrDefault("APP_ENV", "development");
+    }
+
+    private static boolean isProduction() {
+        return getMode().equals("production");
+    }
 
     public static Javalin getApp() {
-        Javalin app = Javalin.create(JavalinConfig::enableDevLogging); //with logging
+        Javalin app = Javalin.create(config -> {
+            if(!isProduction()) { //if APP_ENV not "production"
+                config.enableDevLogging();  //enable logging for development
+            }
+            config.enableWebjars(); // ??? webjars:bootstrap (design pages)
+            //Connect Thy to Javalin on Javalin instance creation
+            JavalinThymeleaf.configure(getTemplateEngine());
+        });
+
         addRoutes(app); //adding routing
+
+        app.before(ctx -> {   //???
+           ctx.attribute("ctx", ctx);
+        });
+
         return app;
+    }
+
+    private static TemplateEngine getTemplateEngine() {
+        // Create Thy instance and plug in dialects
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.addDialect(new LayoutDialect());
+        templateEngine.addDialect(new Java8TimeDialect());
+        // Using ClassLoader Template Resolver, configure the template resover so that the files in the template
+        // directory are processed. Add a template resolver to the template engine
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix("/templates/");
+        templateEngine.addTemplateResolver(templateResolver);
+
+        return templateEngine;
     }
 
     private static void addRoutes(Javalin app) {

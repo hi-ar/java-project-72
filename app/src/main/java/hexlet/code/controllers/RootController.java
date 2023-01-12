@@ -11,6 +11,7 @@ public class RootController {
 //    };
 
     public static Handler welcome = ctx -> {
+        //nothing to do, just:
       ctx.render("index.html");
     };
 }

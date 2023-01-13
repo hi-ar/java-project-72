@@ -11,14 +11,17 @@ public class UrlController {
 
     public static Handler newurl = ctx -> {
         String urlString = ctx.formParam("url");
-        URL url = new URL(urlString);
-        URL toAdd = null;
-        try {
-            toAdd = new URL(url.getProtocol(), url.getHost(), url.getPort(), "");
-        } catch (Exception e) {
+        String protocol = new URL(urlString).getProtocol();
+        String host = new URL(urlString).getHost();
+        int port = new URL(urlString).getPort();
+
+        if (protocol.isEmpty() || host.isEmpty()) {
             PrintWriter printWriter = ctx.res.getWriter(); //res - response
-            printWriter.write(urlString + " is incorrect");    
+            printWriter.write(urlString + " is incorrect: " + protocol + " " + host);
         }
+
+        URL toAdd = new URL(protocol, host, port, "");
+
         //EbeanServer ebeanServer = DBSererInstance.getInstance();
 
         PrintWriter printWriter = ctx.res.getWriter(); //res - response

@@ -3,8 +3,11 @@ package hexlet.code;
 import hexlet.code.controllers.RootController;
 import hexlet.code.controllers.UrlController;
 import io.javalin.Javalin;
+import io.javalin.http.Context;
+import io.javalin.http.RequestLogger;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
+import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
@@ -27,9 +30,11 @@ public class App {
 
     public static Javalin getApp() {
         Javalin app = Javalin.create(config -> {
-            if(!isProduction()) { //if APP_ENV not "production"
-                config.enableDevLogging();  //enable logging for development
-            }
+//            if(!isProduction()) { //if APP_ENV not "production"
+//                config.enableDevLogging();  //enable logging for development
+//            }
+            config.enableDevLogging(); //remove
+           
             config.enableWebjars(); // ??? webjars:bootstrap (design pages)
             //Connect Thy to Javalin on Javalin instance creation
             JavalinThymeleaf.configure(getTemplateEngine());

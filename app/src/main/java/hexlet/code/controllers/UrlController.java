@@ -1,7 +1,8 @@
 package hexlet.code.controllers;
 
 
-import io.ebean.EbeanServer;
+import hexlet.code.domain.Url;
+import hexlet.code.domain.query.QUrl;
 import io.javalin.http.Handler;
 
 import java.io.PrintWriter;
@@ -11,13 +12,13 @@ import java.net.URL;
 public class UrlController {
 
     public static Handler newurl = ctx -> {
-        String urlString = ctx.formParam("url");
+        String urlEntered = ctx.formParam("url");
         URL urlToSave;
         try {
-            urlToSave = new URL(urlString);
+            urlToSave = new URL(urlEntered);
         } catch (MalformedURLException e) {
             PrintWriter printWriter = ctx.res.getWriter(); //res - response
-            printWriter.write(urlString + " is incorrect: " + e);
+            printWriter.write(urlEntered + " is incorrect: " + e);
             return;
         }
         String protocol = urlToSave.getProtocol();
@@ -25,10 +26,22 @@ public class UrlController {
         int port = urlToSave.getPort();
         urlToSave = new URL(protocol, host, port, "");
 
-        //EbeanServer ebeanServer = DBSererInstance.getInstance();
+        Url present = new QUrl()
+                .name.iequalTo(urlToSave.toString())
+                .findOne();
 
-        PrintWriter printWriter = ctx.res.getWriter(); //res - response
-        printWriter.write(urlToSave + " added");
+        if(present == null || present.toString().isEmpty()) {
+            PrintWriter printWriter = ctx.res.getWriter(); //res - response
+            printWriter.write(urlToSave + " added");
+        } else {
+            Url u = new Url(new String(urlToSave.toString()));
+            u.save();
+            PrintWriter printWriter = ctx.res.getWriter(); //res - response
+            printWriter.write(urlToSave + " added");
+        }
+
+//        EbeanServer ebeanServer = DBSererInstance.getInstance();
+//        Database ebeanServer = ;
 
     };
 }

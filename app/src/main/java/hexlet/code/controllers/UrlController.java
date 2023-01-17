@@ -5,33 +5,30 @@ import io.ebean.EbeanServer;
 import io.javalin.http.Handler;
 
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class UrlController {
 
     public static Handler newurl = ctx -> {
         String urlString = ctx.formParam("url");
-        String protocol = new String();
-        String host = new String();
-        int port = new URL(urlString).getPort();
+        URL urlToSave;
         try {
-            protocol = new URL(urlString).getProtocol();
-            host = new URL(urlString).getHost();
-        } catch (RuntimeException e) {
+            urlToSave = new URL(urlString);
+        } catch (MalformedURLException e) {
             PrintWriter printWriter = ctx.res.getWriter(); //res - response
-            printWriter.write(urlString + " is incorrect: " + protocol + " " + host);
+            printWriter.write(urlString + " is incorrect: " + e);
+            return;
         }
-
-//        if (protocol.isEmpty() || host.isEmpty()) {
-//            PrintWriter printWriter = ctx.res.getWriter(); //res - response
-//            printWriter.write(urlString + " is incorrect: " + protocol + " " + host);
-//        }
-        URL toAdd = new URL(protocol, host, port, "");
+        String protocol = urlToSave.getProtocol();
+        String host = urlToSave.getHost();
+        int port = urlToSave.getPort();
+        urlToSave = new URL(protocol, host, port, "");
 
         //EbeanServer ebeanServer = DBSererInstance.getInstance();
 
         PrintWriter printWriter = ctx.res.getWriter(); //res - response
-        printWriter.write(toAdd + " added");
+        printWriter.write(urlToSave + " added");
 
     };
 }

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/application.html}">
 
-<section>
+<section layout:fragment="content">
     <div class="container-lg mt-5">
         <h1>Сайты</h1>
 
@@ -16,14 +16,14 @@
             </tr>
             </thead>
             <tbody>
-                <tr th:each="url : $listUrls" th:object="${url}">
-                    <td th:text="*{id}"></td>
-                    <td>
-                        <a th:text="*{getName}" th:href="@{/urls/{id}(id=*{getId()})}"></a>
-                    </td>
-                    <td></td>
-                    <td></td>
-                </tr>
+            <tr th:each="url : $listUrls" th:object="${url}">
+                <td th:text="*{id}"></td>
+                <td>
+                    <a th:text="*{getName()}" th:href="@{/urls/{id}(id=*{getId()})}"></a>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
             </tbody>
         </table>
 
@@ -31,10 +31,10 @@
             <nav>
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
-                        <a class="page-link" th:href="@{/urls(page=(${page < 2}) ? 1 : (${page - 1}))}">Prev</a>
+                        <a class="page-link" th:href="@{/urls/(page=(${page < 2}) ? 1 : (${page - 1}))}">Prev</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" th:href="@{/urls(page=${page + 1})}">Next</a>
+                        <a class="page-link" th:href="@{/urls/(page=${page + 1})}">Next</a>
                     </li>
                 </ul>
             </nav>

@@ -27,11 +27,9 @@ public class App {
 
     public static Javalin getApp() {
         Javalin app = Javalin.create(config -> {
-//            if(!isProduction()) { //if APP_ENV not "production"
-//                config.enableDevLogging();  //enable logging for development
-//            }
-            config.enableDevLogging(); //remove
-           
+            if(!isProduction()) { //if APP_ENV not "production"
+                config.enableDevLogging();  //enable logging for development
+            }
             config.enableWebjars(); // ??? webjars:bootstrap (design pages)
             //Connect Thy to Javalin on Javalin instance creation
             JavalinThymeleaf.configure(getTemplateEngine());

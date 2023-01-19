@@ -29,7 +29,7 @@ public class UrlController {
 
         ctx.attribute("listUrls", listUrls);
         ctx.attribute("page", page);
-        ctx.render("/urls/list.html");
+        ctx.render("urls/list.html");
     };
 
     public static Handler createUrl = ctx -> {
@@ -41,13 +41,14 @@ public class UrlController {
 
         try {
             urlTemp = new URL(urlEntered);
-        } catch (MalformedURLException e) {
-            ctx.attribute("name", urlEntered);
+        } catch (MalformedURLException e) {   // if incorrect url (w/o http://)
+            ctx.attribute("url", urlEntered);
             ctx.sessionAttribute("flash", incorrectErr);
+            ctx.render("/");
 //            PrintWriter printWriter = ctx.res.getWriter(); //res - response
 //            printWriter.write(urlEntered + " is incorrect: " + e);
-//            return;
         }
+     // cheking already exists?
         String protocol = urlTemp.getProtocol();
         String host = urlTemp.getHost();
         int port = urlTemp.getPort();
@@ -57,15 +58,16 @@ public class UrlController {
                 .name.iequalTo(urlTemp.toString())
                 .findOne();
 
-        if (present == null || present.toString().isEmpty()) { //if no such url in DB
+        if (present == null || present.toString().isEmpty()) { //adding if not exists
             Url u = new Url(new String(urlTemp.toString()));
             u.save();
             ctx.sessionAttribute("flash", successfulAdd);
-            ctx.redirect("/urls");
+            ctx.render("/urls");
 //            PrintWriter printWriter = ctx.res.getWriter(); //res - response
 //            printWriter.write(urlTemp + " added");
         } else {
             ctx.sessionAttribute("flash", existsErr);
+            ctx.render("/");
 //            PrintWriter printWriter = ctx.res.getWriter(); //res - response
 //            printWriter.write(urlTemp + " already exists");
 //            ctx.render("/urls");

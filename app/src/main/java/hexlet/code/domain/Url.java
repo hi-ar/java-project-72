@@ -16,7 +16,7 @@ public class Url extends Model {
     String name;
 
     @WhenCreated
-    private Instant createdAt;
+    private Instant created_at;
 
     public Url(String name) {
         this.name = name;
@@ -30,7 +30,7 @@ public class Url extends Model {
         return name;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
+    public Instant getCreated_at() {
+        return created_at;
     }
 }

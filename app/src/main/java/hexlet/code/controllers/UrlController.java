@@ -41,10 +41,12 @@ public class UrlController {
 
         try {
             urlTemp = new URL(urlEntered);
-        } catch (MalformedURLException e) {   // if incorrect url (w/o http://)
+        } catch (MalformedURLException e) {   // error if incorrect url (w/o http://)
             ctx.attribute("url", urlEntered);
             ctx.sessionAttribute("flash", incorrectErr);
-            ctx.render("/");
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.render("/index.html");
+            return;
 //            PrintWriter printWriter = ctx.res.getWriter(); //res - response
 //            printWriter.write(urlEntered + " is incorrect: " + e);
         }
@@ -57,20 +59,29 @@ public class UrlController {
         Url present = new QUrl()
                 .name.iequalTo(urlTemp.toString())
                 .findOne();
-
-        if (present == null || present.toString().isEmpty()) { //adding if not exists
+        //adding if doesn't exists:
+        if (present == null || present.toString().isEmpty()) {
             Url u = new Url(new String(urlTemp.toString()));
             u.save();
             ctx.sessionAttribute("flash", successfulAdd);
-            ctx.render("/urls");
-//            PrintWriter printWriter = ctx.res.getWriter(); //res - response
-//            printWriter.write(urlTemp + " added");
+            ctx.sessionAttribute("flash-type", "success");
+            ctx.redirect("/urls");
         } else {
+            //error if url already exists:
             ctx.sessionAttribute("flash", existsErr);
-            ctx.render("/");
-//            PrintWriter printWriter = ctx.res.getWriter(); //res - response
-//            printWriter.write(urlTemp + " already exists");
-//            ctx.render("/urls");
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.redirect("/");
         }
+    };
+
+    public static Handler showUrl = ctx -> {
+        long idToFind = ctx.pathParamAsClass("id", long.class).getOrDefault(null);
+
+        Url urlToShow = new QUrl()
+                .id.equalTo(idToFind)
+                .findOne();
+
+        ctx.attribute("url", urlToShow);
+        ctx.render("urls/show.html");
     };
 }

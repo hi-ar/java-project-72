@@ -16,7 +16,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="url : $listUrls" th:object="${url}">
+            <tr th:each="url : ${listUrls}" th:object="${url}">
                 <td th:text="*{id}"></td>
                 <td>
                     <a th:text="*{getName()}" th:href="@{/urls/{id}(id=*{getId()})}"></a>

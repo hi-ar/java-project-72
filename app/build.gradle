@@ -7,7 +7,7 @@ plugins {
   id 'jacoco'
 }
 
-group = 'io.hexlet'
+group = 'hexlet.code'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -55,6 +55,7 @@ dependencies {
 
 test {
   useJUnitPlatform()
+  finalizedBy jacocoTestReport
 }
 
 testlogger {
@@ -62,9 +63,10 @@ testlogger {
 }
 
 jacocoTestReport {
-  reports {
-    xml.required = true
-  }
+  dependsOn test
+      reports {
+          xml.required = true
+      }
 }
 
 checkstyle {

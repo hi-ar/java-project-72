@@ -11,9 +11,6 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-/*
-
- */
 public class App {
     public static void main(String[] args) {
         Javalin app = getApp();
@@ -55,6 +52,7 @@ public class App {
         // directory are processed. Add a template resolver to the template engine
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setPrefix("/templates/");
+        templateResolver.setCharacterEncoding("UTF-8");
         templateEngine.addTemplateResolver(templateResolver);
 
         return templateEngine;

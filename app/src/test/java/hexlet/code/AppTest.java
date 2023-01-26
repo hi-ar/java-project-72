@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static hexlet.code.App.getApp;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -35,8 +36,8 @@ public class AppTest {
 
     @BeforeAll
     public static void beforeAll() {
-        app = App.getApp();
-        int port = 5001; //App.getApp().port();
+        app = getApp();
+        int port = 5001; //tgetApp().port();
         app.start(port);
         baseUrl = "http://localhost:" + port;
         db = DB.getDefault();

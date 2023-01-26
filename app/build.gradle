@@ -51,6 +51,7 @@ dependencies {
   testImplementation 'org.assertj:assertj-core:3.22.0'
   testImplementation 'io.ebean:ebean-test:12.15.1'
   testImplementation 'com.konghq:unirest-java:3.13.6'
+  testImplementation 'io.javalin:javalin-testtools:5.3.2'
 }
 
 test {

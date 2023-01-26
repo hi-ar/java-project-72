@@ -9,13 +9,16 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import static io.javalin.apibuilder.ApiBuilder.*;
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.path;
+import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class App {
     public static void main(String[] args) {
         Javalin app = getApp();
         app.start(getPort());
     }
+
     private static String getMode() {
         return System.getenv().getOrDefault("APP_ENV", "development");
     }
@@ -26,7 +29,7 @@ public class App {
 
     public static Javalin getApp() {
         Javalin app = Javalin.create(config -> {
-            if(!isProduction()) { //if APP_ENV not "production"
+            if (!isProduction()) { //if APP_ENV not "production"
                 config.enableDevLogging();  //enable logging for development
             }
             config.enableWebjars(); // ??? webjars:bootstrap (design pages)
@@ -37,7 +40,7 @@ public class App {
         addRoutes(app); //adding routing
 
         app.before(ctx -> {   //???
-           ctx.attribute("ctx", ctx);
+            ctx.attribute("ctx", ctx);
         });
 
         return app;

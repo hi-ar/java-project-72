@@ -1,12 +1,10 @@
 package hexlet.code.controllers;
 
-
 import hexlet.code.domain.Url;
 import hexlet.code.domain.query.QUrl;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
 
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -50,7 +48,7 @@ public class UrlController {
 //            PrintWriter printWriter = ctx.res.getWriter(); //res - response
 //            printWriter.write(urlEntered + " is incorrect: " + e);
         }
-     // cheking already exists?
+        // cheking already exists?
         String protocol = urlTemp.getProtocol();
         String host = urlTemp.getHost();
         int port = urlTemp.getPort();

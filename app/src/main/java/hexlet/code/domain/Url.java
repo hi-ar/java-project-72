@@ -22,14 +22,23 @@ public class Url extends Model {
         this.name = name;
     }
 
+    /**
+     * @return returns id of url
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * @return returns String url-address.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return returns instant of creation.
+     */
     public Instant getCreated_at() {
         return created_at;
     }

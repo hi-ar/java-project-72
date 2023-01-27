@@ -31,16 +31,16 @@ public class AppTest {
 
     private static Javalin app;
     private static String baseUrl;
-    private static Database db;
+    private static Database database;
     private static Transaction transaction;
 
     @BeforeAll
     public static void beforeAll() {
         app = getApp();
-        int port = 5001; //tgetApp().port();
-        app.start(port);
+        app.start(0);
+        int port = app.port();
         baseUrl = "http://localhost:" + port;
-        db = DB.getDefault();
+        database = DB.getDefault();
     }
 
     @AfterAll
@@ -48,12 +48,17 @@ public class AppTest {
         app.stop();
     }
 
+    /**
+     *  opening transaction.
+     */
     @BeforeEach
     void beforeEach() {
-//        откр транзакция, создать подкл к БД, заполнить.
-        transaction = db.beginTransaction();
+        transaction = database.beginTransaction();
     }
 
+    /**
+     *  rolling transaction back.
+     */
     @AfterEach
     void afterEach() {
         transaction.rollback();

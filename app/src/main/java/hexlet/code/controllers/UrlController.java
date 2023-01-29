@@ -5,8 +5,10 @@ import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
 import hexlet.code.domain.query.QUrlCheck;
 import io.ebean.PagedList;
+import io.javalin.http.ExceptionHandler;
 import io.javalin.http.Handler;
 
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -75,17 +77,26 @@ public class UrlController {
     };
 
     public static Handler showUrl = ctx -> {
+        PrintWriter printWriter = ctx.res.getWriter();
         long idToFind = ctx.pathParamAsClass("id", long.class).getOrDefault(null);
-
-        Url currentUrl = new QUrl()
-                .id.equalTo(idToFind)
-                .findOne();
+        //Url currentUrl = null;
+        //try {
+           Url currentUrl = new QUrl()
+                    .id.equalTo(idToFind)
+                    .findOne();
+//        } catch (Exception e) {
+//            printWriter.write("Exc! trying to get Url instance from db Url: " + e);
+//            return;
+//        }
 
 //        if (currentUrl.getChecksIds().size() != 0) {
+//        try {
 //            List<UrlCheck> currentUrlChecks = currentUrl.getChecksIds().stream()
 //                    .map(checkId -> new QUrlCheck().id.equalTo(checkId).findOne())
 //                    .toList();
 //            ctx.attribute("currentUrlChecks", currentUrlChecks);
+//        } catch (Exception e) {
+//            printWriter.write("Exc! Trying to get list of checks by its ids, from db Checks: " + e);
 //        }
 
         ctx.attribute("url", currentUrl);

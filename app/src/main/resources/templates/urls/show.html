@@ -23,7 +23,8 @@
         </table>
 
         <h2 class="mt-5">Проверки</h2>
-        <form method="post" action="/urls/1/checks">
+        <form th:action="@{/urls/{id}/checks(id=*{id})}" method="post">
+            <!-- <input type="hidden"  name="id" value = {id} /> -->
             <button type="submit" class="btn btn-primary">Запустить проверку</button>
         </form>
 
@@ -37,7 +38,14 @@
             <th class="col-2">Дата проверки</th>
             </thead>
             <tbody>
-
+            <tr th:each="check : ${currentUrlChecks}" th:object="${check}">
+                <td th:text="*{id}"></td>
+                <td th:text="*{statusCode}"></td>
+                <td th:text="*{title}"></td>
+                <td th:text="*{h1}"></td>
+                <td th:text="*{description}"></td>
+                <td th:text="*{createdAt}">Дата проверки</td>
+            </tr>
             </tbody>
         </table>
     </div>

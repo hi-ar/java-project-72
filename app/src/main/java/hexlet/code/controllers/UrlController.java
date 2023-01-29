@@ -1,7 +1,9 @@
 package hexlet.code.controllers;
 
 import hexlet.code.domain.Url;
+import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
+import hexlet.code.domain.query.QUrlCheck;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
 
@@ -75,11 +77,18 @@ public class UrlController {
     public static Handler showUrl = ctx -> {
         long idToFind = ctx.pathParamAsClass("id", long.class).getOrDefault(null);
 
-        Url urlToShow = new QUrl()
+        Url currentUrl = new QUrl()
                 .id.equalTo(idToFind)
                 .findOne();
 
-        ctx.attribute("url", urlToShow);
+//        if (currentUrl.getChecksIds().size() != 0) {
+//            List<UrlCheck> currentUrlChecks = currentUrl.getChecksIds().stream()
+//                    .map(checkId -> new QUrlCheck().id.equalTo(checkId).findOne())
+//                    .toList();
+//            ctx.attribute("currentUrlChecks", currentUrlChecks);
+//        }
+
+        ctx.attribute("url", currentUrl);
         ctx.render("urls/show.html");
     };
 }

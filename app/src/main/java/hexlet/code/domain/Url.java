@@ -7,6 +7,8 @@ import io.ebean.Model;
 import io.ebean.annotation.WhenCreated;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Url extends Model {
@@ -41,5 +43,15 @@ public class Url extends Model {
      */
     public Instant getCreated_at() {
         return created_at;
+    }
+
+    List<Integer> checks = new ArrayList<>();
+
+    public void addCheck(int newCheck) {
+        checks.add(newCheck);
+    }
+
+    public List<Integer> getChecksIds() {
+        return checks;
     }
 }

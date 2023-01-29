@@ -12,8 +12,8 @@ datasource:
     url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE} #${JDBC_DATABASE_URL}
 
 ebean:
-#  migration:
-#    run: true
+#  migration: #
+#    run: true #
   ddl:
     run: true
     generate: true

@@ -47,10 +47,6 @@ public class Url extends Model {
 
     List<Integer> checks = new ArrayList<>();
 
-    public void addCheck(int newCheck) {
-        checks.add(newCheck);
-    }
-
     public List<Integer> getChecksIds() {
         return checks;
     }

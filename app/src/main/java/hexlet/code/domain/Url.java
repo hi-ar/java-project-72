@@ -1,21 +1,20 @@
 package hexlet.code.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import io.ebean.Model;
 import io.ebean.annotation.WhenCreated;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Url extends Model {
     @Id
-    long id;
+    @OneToMany(mappedBy="urlId")
+    private long id;
 
-    String name;
+    private String name;
 
     @WhenCreated
     private Instant created_at;
@@ -43,11 +42,5 @@ public class Url extends Model {
      */
     public Instant getCreated_at() {
         return created_at;
-    }
-
-    List<Integer> checks = new ArrayList<>();
-
-    public List<Integer> getChecksIds() {
-        return checks;
     }
 }

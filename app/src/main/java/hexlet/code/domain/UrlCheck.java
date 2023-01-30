@@ -3,36 +3,36 @@ package hexlet.code.domain;
 import io.ebean.Model;
 import io.ebean.annotation.WhenCreated;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
 public class UrlCheck extends Model {
     @Id
-    long id;
+    private long id;
 
     @WhenCreated
-    Instant createdAt;
+    private Instant createdAt;
 
-    int statusCode;
+    private int statusCode;
 
-    String title;
+    private String title;
 
-    String h1;
+    private String h1;
 
     @Lob
-    String description;
+    private String description;
 
-    String url;
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "id")
+    private long urlId;
 
-    public UrlCheck(int statusCode, String title, String h1, String description, String url) {
+    public UrlCheck(int statusCode, String title, String h1, String description, long urlId) {
         this.statusCode = statusCode;
         this.title = title;
         this.h1 = h1;
         this.description = description;
-        this.url = url;
+        this.urlId = urlId;
     }
 
     /**
@@ -41,18 +41,4 @@ public class UrlCheck extends Model {
     public long getId() {
         return id;
     }
-//
-//    /**
-//     * @return returns String url-address.
-//     */
-//    public String getUrl() {
-//        return url;
-//    }
-//
-//    /**
-//     * @return returns instant of creation.
-//     */
-//    public Instant getCreatedAt() {
-//        return createdAt;
-//    }
 }

@@ -11,6 +11,7 @@ import io.javalin.http.Handler;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UrlController {
@@ -92,17 +93,23 @@ public class UrlController {
 //        }
 
 //        if (currentUrl.getChecksIds().size() != 0) {
-        try {
-        List<UrlCheck> currentUrlChecks = currentUrl.getChecksIds().stream()
-                .map(checkId -> new QUrlCheck().id.equalTo(checkId).findOne())
-                .toList();
-//        ctx.attribute("currentUrlChecks", currentUrlChecks);
-        printWriter.write("\nsize of checks list is: " + currentUrlChecks.size());
-        } catch (IllegalStateException e) {
-            printWriter.write("Exc! Trying to get list of checks by its ids, from db Checks: " + e);
-            return;
-        }
+//        try {
+//        List<UrlCheck> currentUrlChecks = currentUrl.getChecksIds().stream()
+//                .map(checkId -> new QUrlCheck().id.equalTo(checkId).findOne())
+//                .toList();
+//        List<Integer> checkIds = currentUrl.getChecksIds();
+//        List<UrlCheck> currentUrlChecks = new ArrayList<>();
+//        for (int checkId : checkIds) {
+//            currentUrlChecks.add(new QUrlCheck().id.equalTo(checkId).findOne());
+//        }
 
+//        ctx.attribute("currentUrlChecks", currentUrlChecks);
+//        printWriter.write("\nsize of checks list is: " + currentUrlChecks.size());
+//        } catch (IllegalStateException e) {
+//            printWriter.write("Exc! Trying to get list of checks by its ids, from db Checks: " + e);
+//            return;
+//        }
+//        printWriter.write("\ndone");
 //        ctx.attribute("url", currentUrl);
 //        ctx.render("urls/show.html");
     };

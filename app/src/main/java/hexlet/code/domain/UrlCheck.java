@@ -41,4 +41,28 @@ public class UrlCheck extends Model {
     public long getId() {
         return id;
     }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getH1() {
+        return h1;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public long getUrlId() {
+        return urlId;
+    }
 }

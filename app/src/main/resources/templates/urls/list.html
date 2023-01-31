@@ -21,6 +21,8 @@
                 <td>
                     <a th:text="*{getName()}" th:href="@{/urls/{id}(id=*{getId()})}"></a>
                 </td>
+                <!--<td th:object=${url.getLastUrlCheck()} th:text="*{getStatusCode()}"></td>
+                <td th:text="*{getLastUrlCheck().getStatusCode()}"></td> -->
                 <td></td>
                 <td></td>
             </tr>

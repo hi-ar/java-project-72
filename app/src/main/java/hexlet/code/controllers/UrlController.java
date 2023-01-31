@@ -5,13 +5,10 @@ import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
 import hexlet.code.domain.query.QUrlCheck;
 import io.ebean.PagedList;
-import io.javalin.http.ExceptionHandler;
 import io.javalin.http.Handler;
 
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UrlController {
@@ -78,39 +75,16 @@ public class UrlController {
     };
 
     public static Handler showUrl = ctx -> {
-        PrintWriter printWriter = ctx.res.getWriter();
-        long idToFind = ctx.pathParamAsClass("id", long.class).getOrDefault(null);
-        printWriter.write("id of url is: " + idToFind);
-        //Url currentUrl = null;
-        //try {
+        long currentUrlId = ctx.pathParamAsClass("id", long.class).getOrDefault(null);
+
         Url currentUrl = new QUrl()
-                .id.equalTo(idToFind)
+                .id.equalTo(currentUrlId)
                 .findOne();
-        printWriter.write("\ncurrent url is: " + currentUrl.getName());
-//        } catch (Exception e) {
-//            printWriter.write("Exc! trying to get Url instance from db Url: " + e);
-//            return;
-//        }
 
-//        if (currentUrl.getChecksIds().size() != 0) {
-//        try {
-//        List<UrlCheck> currentUrlChecks = currentUrl.getChecksIds().stream()
-//                .map(checkId -> new QUrlCheck().id.equalTo(checkId).findOne())
-//                .toList();
-//        List<Integer> checkIds = currentUrl.getChecksIds();
-//        List<UrlCheck> currentUrlChecks = new ArrayList<>();
-//        for (int checkId : checkIds) {
-//            currentUrlChecks.add(new QUrlCheck().id.equalTo(checkId).findOne());
-//        }
+        List<UrlCheck> currentUrlChecks = new QUrlCheck().urlId.equalTo(currentUrlId).findList();
 
-//        ctx.attribute("currentUrlChecks", currentUrlChecks);
-//        printWriter.write("\nsize of checks list is: " + currentUrlChecks.size());
-//        } catch (IllegalStateException e) {
-//            printWriter.write("Exc! Trying to get list of checks by its ids, from db Checks: " + e);
-//            return;
-//        }
-//        printWriter.write("\ndone");
-//        ctx.attribute("url", currentUrl);
-//        ctx.render("urls/show.html");
+        ctx.attribute("currentUrlChecks", currentUrlChecks);
+        ctx.attribute("url", currentUrl);
+        ctx.render("urls/show.html");
     };
 }

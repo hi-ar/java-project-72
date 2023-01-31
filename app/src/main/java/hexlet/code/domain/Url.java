@@ -4,20 +4,22 @@ import javax.persistence.*;
 
 import io.ebean.Model;
 import io.ebean.annotation.WhenCreated;
+import kong.unirest.JsonObjectMapper;
 
 import java.time.Instant;
-import java.util.List;
 
 @Entity
 public class Url extends Model {
     @Id
-    @OneToMany(mappedBy="urlId")
     private long id;
 
     private String name;
 
     @WhenCreated
     private Instant created_at;
+
+    @Lob
+    private String jsonLastUrlCheck;
 
     public Url(String name) {
         this.name = name;
@@ -42,5 +44,13 @@ public class Url extends Model {
      */
     public Instant getCreated_at() {
         return created_at;
+    }
+
+    /**
+     * @return returns instant of last url check.
+     */
+    public UrlCheck getLastUrlCheck() {
+        UrlCheck lastUrlCheck = new JsonObjectMapper().readValue(jsonLastUrlCheck, UrlCheck.class);
+        return lastUrlCheck;
     }
 }

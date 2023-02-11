@@ -4,9 +4,11 @@ import javax.persistence.*;
 
 import io.ebean.Model;
 import io.ebean.annotation.WhenCreated;
-import kong.unirest.JsonObjectMapper;
 
 import java.time.Instant;
+import java.util.List;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 public class Url extends Model {
@@ -18,8 +20,8 @@ public class Url extends Model {
     @WhenCreated
     private Instant created_at;
 
-    @Lob
-    private String jsonLastUrlCheck;
+    @OneToMany(cascade=ALL)
+    private List<UrlCheck> urlCheckList;
 
     public Url(String name) {
         this.name = name;
@@ -46,11 +48,7 @@ public class Url extends Model {
         return created_at;
     }
 
-    /**
-     * @return returns instant of last url check.
-     */
-    public UrlCheck getLastUrlCheck() {
-        UrlCheck lastUrlCheck = new JsonObjectMapper().readValue(jsonLastUrlCheck, UrlCheck.class);
-        return lastUrlCheck;
+    public List<UrlCheck> getUrlCheckList() {
+        return urlCheckList;
     }
 }

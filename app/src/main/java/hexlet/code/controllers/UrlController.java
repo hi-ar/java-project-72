@@ -1,9 +1,7 @@
 package hexlet.code.controllers;
 
 import hexlet.code.domain.Url;
-import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
-import hexlet.code.domain.query.QUrlCheck;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
 
@@ -81,9 +79,6 @@ public class UrlController {
                 .id.equalTo(currentUrlId)
                 .findOne();
 
-        List<UrlCheck> currentUrlChecks = new QUrlCheck().urlId.equalTo(currentUrlId).findList();
-
-        ctx.attribute("currentUrlChecks", currentUrlChecks);
         ctx.attribute("url", currentUrl);
         ctx.render("urls/show.html");
     };

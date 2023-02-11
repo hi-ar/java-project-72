@@ -21,10 +21,13 @@
                 <td>
                     <a th:text="*{getName()}" th:href="@{/urls/{id}(id=*{getId()})}"></a>
                 </td>
-                <!--<td th:object=${url.getLastUrlCheck()} th:text="*{getStatusCode()}"></td>
-                <td th:text="*{getLastUrlCheck().getStatusCode()}"></td> -->
-                <td></td>
-                <td></td>
+                <td th:if="*{getUrlCheckList().isEmpty()}"></td>
+                <td th:if="*{getUrlCheckList().isEmpty()}"></td>
+                <td th:unless="*{getUrlCheckList().isEmpty()}"
+                    th:text="*{#temporals.format(getUrlCheckList().get(getUrlCheckList().size() - 1).getCreatedAt(),
+                     'dd/MM/yy HH:mm')}"></td>
+                <td th:unless="*{getUrlCheckList().isEmpty()}"
+                    th:text="*{getUrlCheckList().get(getUrlCheckList().size() - 1).getStatusCode()}"></td>
             </tr>
             </tbody>
         </table>

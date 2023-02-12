@@ -6,7 +6,6 @@ import io.ebean.DB;
 import io.ebean.Database;
 import io.ebean.Transaction;
 import io.javalin.Javalin;
-//import io.javalin.testtools.JavalinTest;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import okhttp3.mockwebserver.MockResponse;
@@ -17,8 +16,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,7 +51,7 @@ public class AppTest {
         baseUrl = "http://localhost:" + port;
         database = DB.getDefault();
 
-        Path mockHtmlPath = Paths.get("src","test", "resources", mockHtmlFileName)
+        Path mockHtmlPath = Paths.get("src", "test", "resources", mockHtmlFileName)
                 .toAbsolutePath()
                 .normalize();
         mockHtml = Files.readString(mockHtmlPath);
@@ -62,16 +59,13 @@ public class AppTest {
         MockWebServer mockServer = new MockWebServer();
         mockUrl = mockServer.url("/").toString();
         MockResponse mockResp1 = new MockResponse()
-                .addHeader("Content-Type", "application/json; charset=utf-8")
                 .setBody(mockHtml);
         mockServer.enqueue(mockResp1);
-
     }
 
     @AfterAll
     public static void afterAll() {
         app.stop();
-
     }
 
     /**
@@ -116,16 +110,21 @@ public class AppTest {
                 .asString();
         assertThat(response1.getStatus()).isEqualTo(302);
         System.out.println("Current URL of mockserver is: " + mockUrl);
+        long mockId = new QUrl().findCount();
+        System.out.println("id of URL is: " + mockId);
 
         HttpResponse<String> response2 = Unirest
-                .post(baseUrl + "/urls/1/checks")
+                .post(baseUrl + "/urls/" + mockId + "/checks")
                 .asString();
 
         assertThat(response2.getStatus()).isEqualTo(200);
-        assertThat(response2.getBody()).contains("<td>1</td>");
+        assertThat(response2.getBody()).contains("7 days of the week");
+        assertThat(response2.getBody()).contains("The days of the week");
+        assertThat(response2.getBody()).contains("listing the names of 7 days of the week");
+        assertThat(response2.getBody()).doesNotContain("Friday", "Here are seven days of the week");
     }
     @Test
-    void createUrl() {
+    void createDBEntry() {
         // getting success message and response 302, when creating
         HttpResponse<String> response1 = Unirest
                 .post(baseUrl + "/urls")

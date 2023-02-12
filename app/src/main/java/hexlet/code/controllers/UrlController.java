@@ -46,7 +46,7 @@ public class UrlController {
             ctx.render("/index.html");
             return;
 //            PrintWriter printWriter = ctx.res.getWriter(); //res - response
-//            printWriter.write(urlEntered + " is incorrect: " + e);
+//            printWriter.write(urlEntered + " is incorrect: " + e); //debug
         }
         // cheking already exists?
         String protocol = urlTemp.getProtocol();
@@ -82,4 +82,5 @@ public class UrlController {
         ctx.attribute("url", currentUrl);
         ctx.render("urls/show.html");
     };
+
 }

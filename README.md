@@ -1,5 +1,6 @@
 # Анализатор страниц
-https://page-analyzer-production.up.railway.app/
+https://page-analyzer-production.up.railway.app/ (deploy on railway.com)<br>
+https://page-analyzer-6qut.onrender.com/ (deploy on render.com)
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/hi-ar/java-project-72/workflows/hexlet-check/badge.svg)](https://github.com/hi-ar/java-project-72/actions)
 [![hexlet-check](https://github.com/hi-ar/java-project-72/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/hi-ar/java-project-72/actions/workflows/hexlet-check.yml)

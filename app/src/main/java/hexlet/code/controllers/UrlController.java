@@ -68,7 +68,8 @@ public class UrlController {
             //error if url already exists:
             ctx.sessionAttribute("flash", existsErr);
             ctx.sessionAttribute("flash-type", "danger");
-            ctx.redirect("/");
+//            ctx.redirect("/");
+            ctx.render("/index.html");
         }
     };
 

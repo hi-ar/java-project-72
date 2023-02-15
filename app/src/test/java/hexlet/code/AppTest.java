@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static hexlet.code.App.getApp;
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -45,23 +47,14 @@ public class AppTest {
     private static Transaction transaction;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    public static void beforeAll() {
         app = getApp();
         app.start(0);
         int port = app.port();
         baseUrl = "http://localhost:" + port;
         database = DB.getDefault();
 
-        Path mockHtmlPath = Paths.get("src", "test", "resources", mockHtmlFileName)
-                .toAbsolutePath()
-                .normalize();
-        mockHtml = Files.readString(mockHtmlPath);
 
-        MockWebServer mockServer = new MockWebServer();
-        mockUrl = mockServer.url("/").toString();
-        MockResponse mockResp1 = new MockResponse()
-                .setBody(mockHtml);
-        mockServer.enqueue(mockResp1);
     }
 
     @AfterAll
@@ -104,12 +97,24 @@ public class AppTest {
     }
 
     @Test
-    void createMockUrlAndAddCheck() {
+    void createMockUrlAndAddCheck() throws IOException {
+        Path mockHtmlPath = Paths.get("src", "test", "resources", mockHtmlFileName)
+                .toAbsolutePath()
+                .normalize();
+        mockHtml = Files.readString(mockHtmlPath);
+
+        MockWebServer mockServer = new MockWebServer();
+        mockUrl = mockServer.url("/").toString();
+        MockResponse mockResp1 = new MockResponse()
+                .setBody(mockHtml);
+        mockServer.enqueue(mockResp1);
+
         HttpResponse<String> response1 = Unirest
                 .post(baseUrl + "/urls")
                 .field("url", mockUrl)
                 .asString();
-        assertThat(response1.getStatus()).isEqualTo(302);
+
+        assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);
         System.out.println("Current URL of mockserver is: " + mockUrl);
         long mockId = new QUrl().findCount();
         System.out.println("id of URL is: " + mockId);
@@ -118,7 +123,7 @@ public class AppTest {
                 .post(baseUrl + "/urls/" + mockId + "/checks")
                 .asString();
 
-        assertThat(response2.getStatus()).isEqualTo(200);
+        assertThat(response2.getStatus()).isEqualTo(HTTP_OK);
         assertThat(response2.getBody()).contains("7 days of the week");
         assertThat(response2.getBody()).contains("The days of the week");
         assertThat(response2.getBody()).contains("listing the names of 7 days of the week");
@@ -131,7 +136,7 @@ public class AppTest {
                 .post(baseUrl + "/urls")
                 .field("url", url404)
                 .asString();
-        assertThat(response1.getStatus()).isEqualTo(302);
+        assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);
         long idOf404 = new QUrl().findCount();
         System.out.println("id of URL is: " + idOf404);
 
@@ -139,9 +144,9 @@ public class AppTest {
                 .post(baseUrl + "/urls/" + idOf404 + "/checks")
                 .asString();
 
-        assertThat(response2.getStatus()).isEqualTo(404);
-//        assertThat(response2.getBody()).contains("7 days of the week");
+        assertThat(response2.getBody()).contains("404");
     }
+
     @Test
     void createDBEntry() {
         // getting success message and response 302, when creating
@@ -150,8 +155,7 @@ public class AppTest {
                 .field("url", urlString)
                 .asString();
 
-        //assertThat(response1.getBody()).contains(wordSuccess);
-        assertThat(response1.getStatus()).isEqualTo(302);
+        assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);
         // looking at DB:
         Url expected = new QUrl()
                 .name.iequalTo(urlExpectString)
@@ -164,7 +168,7 @@ public class AppTest {
         HttpResponse<String> response2 = Unirest
                 .get(baseUrl + "/urls/" + urlId + "/")
                 .asString();
-        assertThat(response2.getStatus()).isEqualTo(200);
+        assertThat(response2.getStatus()).isEqualTo(HTTP_OK);
         assertThat(response2.getBody()).contains(urlExpectString);
         // getting error message, when trying to add again
         HttpResponse<String> response3 = Unirest
@@ -172,7 +176,7 @@ public class AppTest {
                 .field("url", urlExpectString)
                 .asString();
 
-        assertThat(response3.getStatus()).isEqualTo(302);
+        assertThat(response3.getStatus()).isEqualTo(HTTP_OK);
         assertThat(response3.getBody()).contains(wordExists);
     }
 

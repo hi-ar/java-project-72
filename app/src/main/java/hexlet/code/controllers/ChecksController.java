@@ -41,10 +41,12 @@ public class ChecksController {
         List<UrlCheck> currentUrlChecks = currentUrl.getUrlCheckList();
         //printWriter.write("\n2/2 list of checks size : " + currentUrlChecks.size()); //debug
 
-        ctx.attribute("url", currentUrl);
-        ctx.redirect("/urls/" + currentUrlId);
         ctx.sessionAttribute("flash", "Страница успешно проверена");
         ctx.sessionAttribute("flash-type", "success");
+        ctx.attribute("url", currentUrl);
+        ctx.render("urls/show.html");
+        //ctx.redirect("/urls/" + currentUrlId);
+
     };
 
     private static UrlCheck makeNewCheck(Url url) throws Exception {
@@ -57,7 +59,7 @@ public class ChecksController {
                     .asString();
         } catch (Exception e) {
             System.out.println("~~~UNIREST GET ERR: " + e.getMessage());
-            //in this case I can't get statuscode 404 etc
+            //in this case, I can't get statuscode 404 etc
         }
 
         int statusCode = response == null ? HTTP_NOT_FOUND : response.getStatus();
@@ -66,16 +68,21 @@ public class ChecksController {
         String h1 = "";
         String content = "";
 
-        if (response != null && response.getBody() != null) {
+        if (response != null && !response.getBody().isEmpty()) {
             Document doc = null; //parsing html into DOM (doc object model)
             try {
                 doc = Jsoup.parse((String) response.getBody());
+                if (doc != null) {
+                    title = doc.title().isEmpty() ? "" : doc.title();
+                    h1 = doc.getElementsByTag("h1").isEmpty() ? ""
+                            : doc.getElementsByTag("h1").first().text();
+                    content = doc.getElementsByAttributeValue("name", "description").isEmpty() ? ""
+                            : doc.getElementsByAttributeValue("name", "description").attr("content")
+                            .toString();
+                }
             } catch (Exception e) {
                 System.out.println("~~~PARSING ERRRR: " + e.getMessage());
             }
-            title = doc.title() == null ? "" : doc.title();
-            h1 = doc.getElementsByTag("h1").first().text();
-            content = doc.getElementsByAttributeValue("name", "description").attr("content").toString();
         }
 
         UrlCheck newCheck = new UrlCheck(statusCode, title, h1, content, url);

@@ -37,6 +37,7 @@ public class AppTest {
     private static String mockUrl = "not set";
     private static String mockHtmlFileName = "mock.html";
     private static String mockHtml;
+    private static String url404 = "https://ru.hexlet.moscow";
 
     private static Javalin app;
     private static String baseUrl;
@@ -123,6 +124,24 @@ public class AppTest {
         assertThat(response2.getBody()).contains("listing the names of 7 days of the week");
         assertThat(response2.getBody()).doesNotContain("Friday", "Here are seven days of the week");
     }
+
+    @Test
+    void getCheckStatus404() {
+        HttpResponse<String> response1 = Unirest
+                .post(baseUrl + "/urls")
+                .field("url", url404)
+                .asString();
+        assertThat(response1.getStatus()).isEqualTo(302);
+        long idOf404 = new QUrl().findCount();
+        System.out.println("id of URL is: " + idOf404);
+
+        HttpResponse<String> response2 = Unirest
+                .post(baseUrl + "/urls/" + idOf404 + "/checks")
+                .asString();
+
+        assertThat(response2.getStatus()).isEqualTo(404);
+//        assertThat(response2.getBody()).contains("7 days of the week");
+    }
     @Test
     void createDBEntry() {
         // getting success message and response 302, when creating
@@ -154,7 +173,7 @@ public class AppTest {
                 .asString();
 
         assertThat(response3.getStatus()).isEqualTo(302);
-        //assertThat(response3.getBody()).contains(wordExists);
+        assertThat(response3.getBody()).contains(wordExists);
     }
 
     @Test

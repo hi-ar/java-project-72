@@ -11,6 +11,8 @@ import org.jsoup.nodes.Document;
 
 import java.util.List;
 
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+
 public class ChecksController {
 
     public static Handler createCheck = ctx -> {
@@ -18,7 +20,18 @@ public class ChecksController {
 
         // getting id of Url (from path) and it's instance (from db)
         long currentUrlId = ctx.pathParamAsClass("id", Integer.class).getOrDefault(0);
+        if (currentUrlId == 0) {
+            ctx.redirect("/urls/" + currentUrlId);
+            ctx.sessionAttribute("flash", "ID страницы не определен: " + currentUrlId);
+            ctx.sessionAttribute("flash-type", "danger");
+        }
+
         Url currentUrl = new QUrl().id.equalTo(currentUrlId).findOne();
+        if (currentUrl == null) {
+            ctx.redirect("/urls/" + currentUrlId);
+            ctx.sessionAttribute("flash", "Нет соединения с БД или отсутствует запись с ID: " + currentUrlId);
+            ctx.sessionAttribute("flash-type", "danger");
+        }
 
         //making new check, saving it to db of checks
         UrlCheck newCheck = makeNewCheck(currentUrl);
@@ -29,23 +42,41 @@ public class ChecksController {
         //printWriter.write("\n2/2 list of checks size : " + currentUrlChecks.size()); //debug
 
         ctx.attribute("url", currentUrl);
-        ctx.render("urls/show.html");
-        ctx.sessionAttribute("flash", "Проверка добавлена");
+        ctx.redirect("/urls/" + currentUrlId);
+        ctx.sessionAttribute("flash", "Страница успешно проверена");
         ctx.sessionAttribute("flash-type", "success");
     };
 
-    private static UrlCheck makeNewCheck(Url url) {
-        HttpResponse<String> response = Unirest
-                .get(url.getName())
-                .asString();
+    private static UrlCheck makeNewCheck(Url url) throws Exception {
 
-        int statusCode = response.getStatus();
+        HttpResponse<String> response = null;
 
-        Document doc = Jsoup.parse(response.getBody()); //parsing html into DOM (doc object model)
+        try {
+            response = Unirest
+                    .get(url.getName())
+                    .asString();
+        } catch (Exception e) {
+            System.out.println("~~~UNIREST GET ERR: " + e.getMessage());
+            //in this case I can't get statuscode 404 etc
+        }
 
-        String title = doc.title();
-        String h1 = doc.getElementsByTag("h1").first().text();
-        String content = doc.getElementsByAttributeValue("name", "description").attr("content").toString();
+        int statusCode = response == null ? HTTP_NOT_FOUND : response.getStatus();
+
+        String title = "";
+        String h1 = "";
+        String content = "";
+
+        if (response != null && response.getBody() != null) {
+            Document doc = null; //parsing html into DOM (doc object model)
+            try {
+                doc = Jsoup.parse((String) response.getBody());
+            } catch (Exception e) {
+                System.out.println("~~~PARSING ERRRR: " + e.getMessage());
+            }
+            title = doc.title() == null ? "" : doc.title();
+            h1 = doc.getElementsByTag("h1").first().text();
+            content = doc.getElementsByAttributeValue("name", "description").attr("content").toString();
+        }
 
         UrlCheck newCheck = new UrlCheck(statusCode, title, h1, content, url);
         newCheck.save();

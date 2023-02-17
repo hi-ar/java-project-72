@@ -10,6 +10,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import static hexlet.code.Utils.getPort;
+import static hexlet.code.Utils.isProduction;
 import static io.javalin.apibuilder.ApiBuilder.get;
 import static io.javalin.apibuilder.ApiBuilder.path;
 import static io.javalin.apibuilder.ApiBuilder.post;
@@ -17,20 +19,12 @@ import static io.javalin.apibuilder.ApiBuilder.post;
 public class App {
     public static void main(String[] args) {
         Javalin app = getApp();
-        app.start(getPort());
-    }
-
-    private static String getMode() {
-        return System.getenv().getOrDefault("APP_ENV", "development");
-    }
-
-    private static boolean isProduction() {
-        return getMode().equals("production");
+        app.start(getPort()); //Utils
     }
 
     public static Javalin getApp() {
         Javalin app = Javalin.create(config -> {
-            if (!isProduction()) { //if APP_ENV not "production"
+            if (!isProduction()) { //Utils. If APP_ENV not "production"
                 config.enableDevLogging();  //enable logging for development
             }
             config.enableWebjars(); // ??? webjars:bootstrap (design pages)
@@ -43,7 +37,6 @@ public class App {
         app.before(ctx -> {   //???
             ctx.attribute("ctx", ctx);
         });
-
         return app;
     }
 
@@ -77,10 +70,7 @@ public class App {
         });
     }
 
-    private static int getPort() {
-        String port = System.getenv().getOrDefault("PORT", "5001");
-        return Integer.valueOf(port);
-    }
+
 
 }
 

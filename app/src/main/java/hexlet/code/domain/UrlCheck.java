@@ -38,6 +38,12 @@ public class UrlCheck extends Model {
         this.description = description;
         this.url = url;
     }
+    public UrlCheck(int statusCode, String title, String h1, String description) {
+        this.statusCode = statusCode;
+        this.title = title;
+        this.h1 = h1;
+        this.description = description;
+    }
 
     /**
      * @return id of url

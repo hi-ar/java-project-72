@@ -11,6 +11,9 @@ import org.jsoup.nodes.Document;
 
 import java.util.List;
 
+import static hexlet.code.Utils.ALERT_ID_NOTSET;
+import static hexlet.code.Utils.ALERT_NOT_FOUND;
+import static hexlet.code.Utils.ALERT_SUCCES_CHECK;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
 public class ChecksController {
@@ -22,31 +25,29 @@ public class ChecksController {
         long currentUrlId = ctx.pathParamAsClass("id", Integer.class).getOrDefault(0);
         if (currentUrlId == 0) {
             ctx.redirect("/urls/" + currentUrlId);
-            ctx.sessionAttribute("flash", "ID страницы не определен: " + currentUrlId);
+            ctx.sessionAttribute("flash", ALERT_ID_NOTSET + currentUrlId);
             ctx.sessionAttribute("flash-type", "danger");
         }
 
         Url currentUrl = new QUrl().id.equalTo(currentUrlId).findOne();
         if (currentUrl == null) {
             ctx.redirect("/urls/" + currentUrlId);
-            ctx.sessionAttribute("flash", "Нет соединения с БД или отсутствует запись с ID: " + currentUrlId);
+            ctx.sessionAttribute("flash", ALERT_NOT_FOUND + currentUrlId);
             ctx.sessionAttribute("flash-type", "danger");
         }
 
         //making new check, saving it to db of checks
-        UrlCheck newCheck = makeNewCheck(currentUrl);
-        //printWriter.write("1/2 new check created at " + newCheck.getCreatedAt().toString()); //debug
+        makeNewCheck(currentUrl);
 
         //getting existing check ids list for current Url
         List<UrlCheck> currentUrlChecks = currentUrl.getUrlCheckList();
         //printWriter.write("\n2/2 list of checks size : " + currentUrlChecks.size()); //debug
 
-        ctx.sessionAttribute("flash", "Страница успешно проверена");
+        ctx.sessionAttribute("flash", ALERT_SUCCES_CHECK);
         ctx.sessionAttribute("flash-type", "success");
         ctx.attribute("url", currentUrl);
         ctx.render("urls/show.html");
         //ctx.redirect("/urls/" + currentUrlId);
-
     };
 
     private static UrlCheck makeNewCheck(Url url) throws Exception {

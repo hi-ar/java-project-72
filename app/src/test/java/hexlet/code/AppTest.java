@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static hexlet.code.App.getApp;
+import static hexlet.code.Utils.ALERT_EXISTS_URL;
+import static hexlet.code.Utils.ALERT_INCORR_URL;
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,9 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AppTest {
     private static String wordPageAnalizer = "Анализатор страниц";
     private static String wordListUrls = "Последняя проверка";
-    private static String wordIncorrect = "Некорректный URL";
-    private static String wordExists = "Страница уже существует";
-    private static String wordSuccess = "Страница успешно добавлена";
     private static String urlString = "https://ru.hexlet.io/projects/72/members/27753?step=6";
     private static String urlExpectString = "https://ru.hexlet.io";
     private static String urlWrongString = "www.hexlet.io";
@@ -177,17 +176,17 @@ public class AppTest {
                 .asString();
 
         assertThat(response3.getStatus()).isEqualTo(HTTP_OK);
-        assertThat(response3.getBody()).contains(wordExists);
+        assertThat(response3.getBody()).contains(ALERT_EXISTS_URL);
     }
 
     @Test
-    void createUrlErrIncorrect() {
+    void getAlertAlreadyExists() {
         HttpResponse<String> response = Unirest
                 .post(baseUrl + "/urls")
                 .field("url", urlWrongString)
                 .asString();
 
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getBody()).contains(wordIncorrect);
+        assertThat(response.getBody()).contains(ALERT_INCORR_URL);
     }
 }

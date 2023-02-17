@@ -9,8 +9,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-public class UrlController {
+import static hexlet.code.Utils.ALERT_EXISTS_URL;
+import static hexlet.code.Utils.ALERT_INCORR_URL;
+import static hexlet.code.Utils.ALERT_SUCCES_ADD;
 
+public class UrlController {
     public static Handler listUrls = ctx -> {
         int page = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
         int rowsPerPage = 10;
@@ -33,15 +36,12 @@ public class UrlController {
     public static Handler createUrl = ctx -> {
         String urlEntered = ctx.formParam("url");
         URL urlTemp = null;
-        String incorrectErr = "Некорректный URL";
-        String existsErr = "Страница уже существует";
-        String successfulAdd = "Страница успешно добавлена";
 
         try {
             urlTemp = new URL(urlEntered);
         } catch (MalformedURLException e) {   // error if incorrect url (w/o http://)
             ctx.attribute("url", urlEntered);
-            ctx.sessionAttribute("flash", incorrectErr);
+            ctx.sessionAttribute("flash", ALERT_INCORR_URL);
             ctx.sessionAttribute("flash-type", "danger");
             ctx.render("/index.html");
             return;
@@ -57,19 +57,21 @@ public class UrlController {
         Url present = new QUrl()
                 .name.iequalTo(urlTemp.toString())
                 .findOne();
-        //adding if doesn't exists:
-        if (present == null || present.toString().isEmpty()) {
-            Url u = new Url(new String(urlTemp.toString()));
-            u.save();
-            ctx.sessionAttribute("flash", successfulAdd);
-            ctx.sessionAttribute("flash-type", "success");
-            ctx.redirect("/urls");
-        } else {
+        if (present != null) {
             //error if url already exists:
-            ctx.sessionAttribute("flash", existsErr);
+            ctx.sessionAttribute("flash", ALERT_EXISTS_URL);
             ctx.sessionAttribute("flash-type", "danger");
 //            ctx.redirect("/");
             ctx.render("/index.html");
+
+        } else { //adding if doesn't exists:
+            Url u = new Url(urlTemp.toString());
+            u.save();
+            ctx.sessionAttribute("flash", ALERT_SUCCES_ADD);
+            ctx.sessionAttribute("flash-type", "success");
+//            ctx.attribute("listUrls", listUrls);
+//            ctx.render("urls/list.html");
+            ctx.redirect("/urls");
         }
     };
 
@@ -83,5 +85,4 @@ public class UrlController {
         ctx.attribute("url", currentUrl);
         ctx.render("urls/show.html");
     };
-
 }

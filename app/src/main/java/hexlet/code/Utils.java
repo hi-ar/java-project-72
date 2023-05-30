@@ -4,7 +4,7 @@ public class Utils {
     static final String DEF_PORT = "5001";
     static final String DEVELOPMENT = "development";
     static final String PRODUCTION = "production";
-    public static final String ALERT_INCORR_URL = "Некорректный URL";
+    public static final String ALERT_INCORR_URL = "Некорректный адрес";
     public static final String ALERT_EXISTS_URL = "Страница уже существует";
     public static final String ALERT_SUCCES_ADD = "Страница успешно добавлена";
     public static final String ALERT_ID_NOTSET = "ID страницы не определен: ";

@@ -11,6 +11,7 @@ import java.util.List;
 
 import static hexlet.code.Utils.ALERT_EXISTS_URL;
 import static hexlet.code.Utils.ALERT_INCORR_URL;
+import static hexlet.code.Utils.ALERT_NOT_FOUND;
 import static hexlet.code.Utils.ALERT_SUCCES_ADD;
 
 public class UrlController {
@@ -20,10 +21,9 @@ public class UrlController {
         int offset = (page - 1) * rowsPerPage;
 
         PagedList<Url> pagedUrls = new QUrl()
-                .setFirstRow(offset)
+                .setFirstRow(offset) //first url 0 or 10
                 .setMaxRows(rowsPerPage)
-                .orderBy()
-                .id.asc()
+                .orderBy().id.asc()
                 .findPagedList();
 
         List<Url> listUrls = pagedUrls.getList();
@@ -77,12 +77,16 @@ public class UrlController {
 
     public static Handler showUrl = ctx -> {
         long currentUrlId = ctx.pathParamAsClass("id", long.class).getOrDefault(null);
-
-        Url currentUrl = new QUrl()
-                .id.equalTo(currentUrlId)
-                .findOne();
-
-        ctx.attribute("url", currentUrl);
-        ctx.render("urls/show.html");
+        try {
+            Url currentUrl = new QUrl()
+                    .id.equalTo(currentUrlId)
+                    .findOne();
+            ctx.attribute("url", currentUrl);
+            ctx.render("urls/show.html");
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", ALERT_NOT_FOUND + currentUrlId);
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.render("/index.html");
+        }
     };
 }

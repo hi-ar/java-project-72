@@ -4,6 +4,7 @@ import io.ebean.Model;
 import io.ebean.annotation.WhenCreated;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.time.Instant;
@@ -14,8 +15,8 @@ import static javax.persistence.CascadeType.ALL;
 @Entity
 public class Url extends Model {
     @Id
+    @GeneratedValue
     private long id;
-
     private String name;
 
     @WhenCreated
@@ -27,7 +28,8 @@ public class Url extends Model {
     public Url(String name) {
         this.name = name;
     }
-
+    public Url() { //for correct init
+    }
     /**
      * @return returns id of url
      */

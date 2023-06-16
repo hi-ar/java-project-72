@@ -4,8 +4,8 @@ import io.ebean.Model;
 import io.ebean.annotation.WhenCreated;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import java.time.Instant;
@@ -13,6 +13,7 @@ import java.time.Instant;
 @Entity
 public class UrlCheck extends Model {
     @Id
+    @GeneratedValue
     private long id;
 
     @WhenCreated
@@ -28,7 +29,7 @@ public class UrlCheck extends Model {
     private String description;
 
     @ManyToOne
-    @JoinColumn //(referencedColumnName = "id")
+    //@JoinColumn //(referencedColumnName = "id")
     private Url url;
 
     public UrlCheck(int statusCode, String title, String h1, String description, Url url) {
@@ -43,6 +44,9 @@ public class UrlCheck extends Model {
         this.title = title;
         this.h1 = h1;
         this.description = description;
+    }
+
+    public UrlCheck() { //for correct init
     }
 
     /**

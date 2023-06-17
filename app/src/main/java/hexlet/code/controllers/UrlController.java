@@ -9,12 +9,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import static hexlet.code.Utils.ALERT_EXISTS_URL;
-import static hexlet.code.Utils.ALERT_INCORR_URL;
-import static hexlet.code.Utils.ALERT_NOT_FOUND;
-import static hexlet.code.Utils.ALERT_SUCCES_ADD;
-
 public class UrlController {
+
+    public static final String ALERT_INCORR_URL = "Некорректный адрес";
+    public static final String ALERT_EXISTS_URL = "Страница уже существует";
+    public static final String ALERT_NOT_FOUND = "Нет соединения с БД или отсутствует запись с ID: ";
+    public static final String ALERT_SUCCES_ADD = "Страница успешно добавлена";
     public static Handler listUrls = ctx -> {
         int page = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
         int rowsPerPage = 10;

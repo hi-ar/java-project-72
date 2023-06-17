@@ -9,12 +9,11 @@ import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import static hexlet.code.Utils.ALERT_ID_NOTSET;
-import static hexlet.code.Utils.ALERT_INCORR_URL;
-import static hexlet.code.Utils.ALERT_NOT_FOUND;
-import static hexlet.code.Utils.ALERT_SUCCES_CHECK;
-
 public class ChecksController {
+    public static final String ALERT_INCORR_URL = "Некорректный адрес";
+    public static final String ALERT_ID_NOTSET = "ID страницы не определен: ";
+    public static final String ALERT_NOT_FOUND = "Нет соединения с БД или отсутствует запись с ID: ";
+    public static final String ALERT_SUCCES_CHECK = "Страница успешно проверена";
 
     public static Handler createCheck = ctx -> {
         //PrintWriter printWriter = ctx.res.getWriter(); //debug

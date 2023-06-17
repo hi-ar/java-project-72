@@ -22,13 +22,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static hexlet.code.App.getApp;
-import static hexlet.code.Utils.ALERT_INCORR_URL;
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class AppTest {
+    public static final String ALERT_INCORR_URL = "Некорректный адрес";
     private static String wordPageAnalizer = "Анализатор страниц";
     private static String wordListUrls = "Последняя проверка";
     private static String urlString = "https://ru.hexlet.io/projects/72/members/27753?step=6";
@@ -51,8 +51,6 @@ public class AppTest {
         int port = app.port();
         baseUrl = "http://localhost:" + port;
         database = DB.getDefault();
-
-
     }
 
     @AfterAll
@@ -112,6 +110,8 @@ public class AppTest {
                 .field("url", mockUrl)
                 .asString();
 
+        System.out.println(System.getenv().getOrDefault("APP_ENV", "default value of app env"));
+
         assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);   // why not 200?
         System.out.println("Current URL of mockserver is: " + mockUrl);
         long mockId = new QUrl().findCount();
@@ -121,8 +121,8 @@ public class AppTest {
                 .post(baseUrl + "/urls/" + mockId + "/checks")
                 .asString();
 
-//        assertThat(response2.getStatus()).isEqualTo(HTTP_OK);
-//        assertThat(response2.getBody()).contains("7 days of the week");
+//        assertThat(assertThat(response2.getStatus()).isEqualTo(HTTP_OK));
+        assertThat(response2.getBody()).contains("7 days of the week");
 //        assertThat(response2.getBody()).contains("The days of the week");
 //        assertThat(response2.getBody()).contains("listing the names of 7 days of the week");
 //        assertThat(response2.getBody()).doesNotContain("Friday", "Here are seven days of the week");

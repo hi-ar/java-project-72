@@ -99,33 +99,39 @@ public class AppTest {
                 .normalize();
         mockHtml = Files.readString(mockHtmlPath);
 
-        MockWebServer mockServer = new MockWebServer();
-        mockUrl = mockServer.url("/").toString();
-        MockResponse mockResp1 = new MockResponse()
-                .setBody(mockHtml);
-        mockServer.enqueue(mockResp1);
+        MockWebServer mockServer = new MockWebServer(); //создали сервер, который будет отдавать анализатору хтмл
+
+        mockUrl = mockServer.url("/").toString(); //получаем адрес хтмл
+
+        MockResponse mockResp1 = new MockResponse().setBody(mockHtml); //создали риспонс с хтмл
+        mockServer.enqueue(mockResp1); //ставит в очередь риспонс с хтмл - серверу
 
         HttpResponse<String> response1 = Unirest
-                .post(baseUrl + "/urls")
-                .field("url", mockUrl)
-                .asString();
+                .post(baseUrl + "/urls") //отправляем пост-риквест
+                .field("url", mockUrl) //в поле url подставляем адрес
+                .asString(); //сохраняем риспонс в строку
 
         System.out.println(System.getenv().getOrDefault("APP_ENV", "default value of app env"));
+        System.out.println("Current URL of mockserver is: : " + mockUrl);
+        System.out.println("resp is: " + response1);
 
         assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);   // why not 200?
-        System.out.println("Current URL of mockserver is: " + mockUrl);
         long mockId = new QUrl().findCount();
-        System.out.println("id of URL is: " + mockId);
+        System.out.println("id of URL is: " + mockId); //сколько записей в БД
 
         HttpResponse<String> response2 = Unirest
-                .post(baseUrl + "/urls/" + mockId + "/checks")
+                .post(baseUrl + "/urls/" + mockId + "/checks") //запускаем проверку для добавленного
                 .asString();
+        assertThat(assertThat(response2.getStatus()).isEqualTo(HTTP_MOVED_TEMP));
 
-//        assertThat(assertThat(response2.getStatus()).isEqualTo(HTTP_OK));
-//        assertThat(response2.getBody()).contains("7 days of the week");
-//        assertThat(response2.getBody()).contains("The days of the week");
-//        assertThat(response2.getBody()).contains("listing the names of 7 days of the week");
-//        assertThat(response2.getBody()).doesNotContain("Friday", "Here are seven days of the week");
+        HttpResponse<String> response3 = Unirest
+                .get(baseUrl + "/urls/" + mockId) //читаем результат анализа
+                .asString();
+        assertThat(assertThat(response3.getStatus()).isEqualTo(HTTP_OK));
+        assertThat(response3.getBody()).contains("7 days of the week");
+        assertThat(response3.getBody()).contains("The days of the week");
+        assertThat(response3.getBody()).contains("listing the names of 7 days of the week");
+        assertThat(response3.getBody()).doesNotContain("Friday", "Here are seven days of the week");
     }
 
     @Test
@@ -141,6 +147,7 @@ public class AppTest {
         HttpResponse<String> response2 = Unirest
                 .post(baseUrl + "/urls/" + idOf404 + "/checks")
                 .asString();
+        assertThat(assertThat(response2.getStatus()).isEqualTo(HTTP_MOVED_TEMP));
 //        assertThat(response2.getBody()).contains(ALERT_INCORR_URL); //Expecting actual: ""  to contain: "Некор"
     }
 

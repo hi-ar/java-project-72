@@ -8,22 +8,24 @@ import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChecksController {
     public static final String ALERT_INCORR_URL = "Некорректный адрес";
     public static final String ALERT_ID_NOTSET = "ID страницы не определен: ";
     public static final String ALERT_NOT_FOUND = "Нет соединения с БД или отсутствует запись с ID: ";
     public static final String ALERT_SUCCES_CHECK = "Страница успешно проверена";
-
+    private static Logger log = LoggerFactory.getLogger(ChecksController.class);
     public static Handler createCheck = ctx -> {
-        //PrintWriter printWriter = ctx.res.getWriter(); //debug
 
-        // getting id of Url (from path) and it's instance (from db)
+        // getting id of Url from path, and it's instance (from db)
         Integer currentUrlId = ctx.pathParamAsClass("id", Integer.class).getOrDefault(null);
         if (currentUrlId == null) {
             ctx.redirect("/");
             ctx.sessionAttribute("flash", ALERT_ID_NOTSET);
             ctx.sessionAttribute("flash-type", "danger");
+            log.error("Attempt to get check for Url with NULL id");
             return;
         }
 
@@ -32,6 +34,7 @@ public class ChecksController {
             ctx.redirect("/");
             ctx.sessionAttribute("flash", ALERT_NOT_FOUND + currentUrlId);
             ctx.sessionAttribute("flash-type", "danger");
+            log.error("Attempt to get check for not existing Url id {}", currentUrlId);
             return;
         }
 
@@ -42,6 +45,7 @@ public class ChecksController {
                     .asString();
 
             Document doc = Jsoup.parse((String) response.getBody());
+            log.info("Got Http resp for {}, and successfully parsed", currentUrl);
 
             String title = doc.title().isEmpty() ? "" : doc.title();
             String h1 = doc.getElementsByTag("h1").isEmpty() ? ""
@@ -50,14 +54,17 @@ public class ChecksController {
                     : doc.getElementsByAttributeValue("name", "description").attr("content")
                     .toString();
             int statusCode = response.getStatus();
+            log.info("Got title: {}, h1: {}, content: {}, status-code: {}", title, h1, content, statusCode);
 
             UrlCheck newCheck = new UrlCheck(statusCode, title, h1, content, currentUrl);
             newCheck.save();
+            log.info("successfully saved the new Check to list of checks");
 
         } catch (Exception e) {
             ctx.sessionAttribute("flash", ALERT_INCORR_URL);
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect("/urls/" + currentUrlId);
+            log.error("Can't make the new check for Url {}", currentUrl);
             return;
         }
 

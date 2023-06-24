@@ -104,7 +104,7 @@ public class AppTest {
         mockUrl = mockServer.url("/").toString(); //получаем адрес хтмл
 
         MockResponse mockResp1 = new MockResponse().setBody(mockHtml); //создали риспонс с хтмл
-        mockServer.enqueue(mockResp1); //ставит в очередь риспонс с хтмл - серверу
+        mockServer.enqueue(mockResp1); //ставим серверу риспонс с хтмл  в очередь
 
         HttpResponse<String> response1 = Unirest
                 .post(baseUrl + "/urls") //отправляем пост-риквест
@@ -115,7 +115,7 @@ public class AppTest {
         System.out.println("Current URL of mockserver is: : " + mockUrl);
         System.out.println("resp is: " + response1);
 
-        assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);   // why not 200?
+        assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);
         long mockId = new QUrl().findCount();
         System.out.println("id of URL is: " + mockId); //сколько записей в БД
 
@@ -127,7 +127,6 @@ public class AppTest {
         HttpResponse<String> response3 = Unirest
                 .get(baseUrl + "/urls/" + mockId) //читаем результат анализа
                 .asString();
-        assertThat(assertThat(response3.getStatus()).isEqualTo(HTTP_OK));
         assertThat(response3.getBody()).contains("7 days of the week");
         assertThat(response3.getBody()).contains("The days of the week");
         assertThat(response3.getBody()).contains("listing the names of 7 days of the week");

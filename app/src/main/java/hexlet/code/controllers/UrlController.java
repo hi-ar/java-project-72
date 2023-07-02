@@ -68,7 +68,7 @@ public class UrlController {
             ctx.sessionAttribute("flash", ALERT_EXISTS_URL);
             ctx.sessionAttribute("flash-type", "danger");
             ctx.render("/index.html");
-            log.info("Such Url {} already exists", urlNormalized);
+            log.warn("Such Url {} already exists", urlNormalized);
 
         } else { //adding if doesn't exists:
             Url u = new Url(urlNormalized);

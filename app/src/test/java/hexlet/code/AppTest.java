@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AppTest {
     public static final String ALERT_INCORR_URL = "Некорректный адрес";
     private static String wordPageAnalizer = "Анализатор страниц";
-    private static String wordListUrls = "Последняя проверка";
+    private static String wordListUrls = "Список сайтов";
     private static String urlString = "https://ru.hexlet.io/projects/72/members/27753?step=6";
     private static String urlExpectString = "https://ru.hexlet.io";
     private static String urlWrongString = "www.hexlet.io";
@@ -122,7 +122,7 @@ public class AppTest {
         HttpResponse<String> response2 = Unirest
                 .post(baseUrl + "/urls/" + mockId + "/checks") //запускаем проверку для добавленного
                 .asString();
-        assertThat(assertThat(response2.getStatus()).isEqualTo(HTTP_MOVED_TEMP));
+        assertThat(response2.getStatus()).isEqualTo(HTTP_MOVED_TEMP);
 
         HttpResponse<String> response3 = Unirest
                 .get(baseUrl + "/urls/" + mockId) //читаем результат анализа
@@ -140,16 +140,16 @@ public class AppTest {
                 .field("url", url404)
                 .asString();
         assertThat(response1.getStatus()).isEqualTo(HTTP_MOVED_TEMP);
-        long idOf404 = new QUrl().findCount();
+        long idOf404 = new QUrl().name.contains(url404).findOne().getId();
         System.out.println("id of URL is: " + idOf404);
 
-        HttpResponse<String> response2 = Unirest
-                .post(baseUrl + "/urls/" + idOf404 + "/checks")
-                .asString();
-        assertThat(assertThat(response2.getStatus()).isEqualTo(HTTP_MOVED_TEMP));
-//        assertThat(response2.getBody()).contains(ALERT_INCORR_URL); //Expecting actual: ""  to contain: "Некор"
-    }
+        HttpResponse<String> response2 = Unirest.post(baseUrl + "/urls/" + idOf404 + "/checks").asString();
+        assertThat(response2.getStatus()).isEqualTo(HTTP_MOVED_TEMP);
 
+        HttpResponse<String> response3 = Unirest.get(baseUrl + "/urls/" + idOf404).asString();
+        System.out.println(response3.getBody());
+        assertThat(response3.getBody()).contains(ALERT_INCORR_URL);
+    }
     @Test
     void createDBEntry() {
         // getting success message and response 302, when creating

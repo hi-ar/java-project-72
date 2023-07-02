@@ -25,7 +25,7 @@ public class ChecksController {
             ctx.redirect("/");
             ctx.sessionAttribute("flash", ALERT_ID_NOTSET);
             ctx.sessionAttribute("flash-type", "danger");
-            log.error("Attempt to get check for Url with NULL id");
+            log.warn("Attempt to get check for Url with NULL id");
             return;
         }
 
@@ -34,7 +34,7 @@ public class ChecksController {
             ctx.redirect("/");
             ctx.sessionAttribute("flash", ALERT_NOT_FOUND + currentUrlId);
             ctx.sessionAttribute("flash-type", "danger");
-            log.error("Attempt to get check for not existing Url id {}", currentUrlId);
+            log.warn("Attempt to get check for not existing Url id {}", currentUrlId);
             return;
         }
 
